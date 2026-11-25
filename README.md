@@ -7,11 +7,11 @@ The operator tells the program where a joint needs to move (in degrees) and how 
 HOW TO USE:
 Place the arm at its physical zero and use "H" to record that position as home. Send "J3", "F22.5", "G15" each on their own lines. 
 J3 selects joint 3. Single-joint commands apply to the selected joint.
-F22.5 sets joint 3 to a speed of 22.5 angles per second.
+F22.5 sets joint 3 to a speed of 22.5 degrees per second.
 G15 requests an absolute position of 15 degrees from home. You can also use "A" to move the joint from the current estimated position (ex. A47 would move joint 3 47 degrees from 15 degrees).
 
 Using gear ratios, the functions pulsesPerDegree() and moveTo() convert the angle into a pulse count.
-Function prepareRamps() decides when to send the pulses. It uses a 0.5 second ramp to the requested speed, then mirrors the timing to slow down. For this particular 15 degree move, reaching 22.5°/s and slowing back down would require 11.25°. The planner therefore starts decelerating before it reaches full speed. The move still calls for the calculated pulse count. Distance determines the pulse count, while acceleration determines their spacing.
+Function prepareRamps() decides when to send the pulses. It uses a 0.5 second ramp to the requested speed, then mirrors the timing to slow down. For this particular 15 degree move, starting from home, joint 3 accelerates over the first 5.625°, travels 3.75° at the requested speed, and decelerates over the final 5.625°. The planner therefore starts decelerating before it reaches full speed. The move still calls for the calculated pulse count. Distance determines the pulse count, while acceleration determines their spacing.
 After prepareRamps() calculates the timing, a hardware timer triggers ISR(TIMER1_COMPA_vect), which is an interrupt routine to switch STEP pins to high or low at scheduled times. loop() can still read serial commands during the move, so "S" can request a quick stop.
 
 After testing, the robotic manipulator can successfully move to all angle limitations at all available speeds with satisfactory accuracy. 
